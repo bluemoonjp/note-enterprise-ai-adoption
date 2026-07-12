@@ -21,7 +21,7 @@
 
 | パス | 内容 |
 | --- | --- |
-| [research/](research/) | 調査記事（Markdown、`00`〜`09` の連番） |
+| [research/](research/) | 調査記事（Markdown、`00`〜`11` の連番）＋ [付録](research/appendix/) |
 | [research/README.md](research/README.md) | 記事インデックス（各記事のステータス一覧） |
 | [docs/style-guide.md](docs/style-guide.md) | 執筆・出典規約 |
 | [docs/glossary.md](docs/glossary.md) | 用語集 |
