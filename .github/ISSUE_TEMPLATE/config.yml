@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 貢献ガイド（CONTRIBUTING）
+    url: https://github.com/bluemoonjp/note-enterprise-ai-adoption/blob/main/CONTRIBUTING.md
+    about: 作業フロー・執筆ルールはこちらを参照してください。
+  - name: 執筆・出典スタイルガイド
+    url: https://github.com/bluemoonjp/note-enterprise-ai-adoption/blob/main/docs/style-guide.md
+    about: 記事を書く前に必ず読んでください。

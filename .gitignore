@@ -1,0 +1,17 @@
+# OS / エディタ
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+.vscode/
+.idea/
+
+# 一時ファイル
+*.tmp
+*.bak
+*.log
+.tmp/
+scratch/
+
+# Codex / ローカルツールのキャッシュ（あれば）
+.codex/
