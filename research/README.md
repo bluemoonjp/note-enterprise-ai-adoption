@@ -22,5 +22,5 @@
 | 11 | [段階導入ロードマップと判断ゲート](11-rollout-gates.md) | 30/60/90日・Go/Hold/Stop | 実施 | アウトライン | #12 |
 | — | [付録: 実務テンプレート集](appendix/README.md) | 稟議書・利用規程・評価票等の置き場 | 実務 | 枠のみ | — |
 
-> 「関連Issue」列は、各記事のIssue起票後に番号を記入する。
+> 「関連Issue」列は各記事のトラッキングIssue。記事更新時はステータス列も更新する。
 > 構成の背景は [../docs/reviews/codex-plan.md](../docs/reviews/codex-plan.md) を参照。

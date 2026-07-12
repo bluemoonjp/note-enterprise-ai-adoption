@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> 上記は Claude Code が読み込む定型ヘッダ（変更不可）。以降の本文はすべて日本語で記述する。
+
 ## 本リポジトリの作業ルールは AGENTS.md が正本
 
 運用ルール（目的・出典必須・確認日・Issue駆動フロー・ディレクトリの意味・Codex
