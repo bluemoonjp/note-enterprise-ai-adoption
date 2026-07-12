@@ -1,50 +1,290 @@
 # 05 セキュリティ・プライバシー・法務・調達
 
-> ステータス: アウトライン
-> 対象読者: 情シス／社内SE・法務・調達
+> ステータス: 初稿
+> 対象読者: 情シス部門内（統制の実装レベルまで理解する）＋上層（何が担保されているかを説明する）の二層。詳細は00参照
 > この記事が答える問い: どの情報をAIに入れてよいか、契約・越境・調達で何を確認するか
-> 対象範囲: 情報分類・入力可否・保持/削除・越境・DPA・調達確認 ／ 対象外: 組織の責任分担（→04）、製品比較（→06）
-> 対象地域 / 対象契約: 日本 / 法人契約（プラン・地域で成立条件が変わる主張は適用条件を併記）
-> 確認日: 2026-07-12 ／ 再確認期限: 2026-10-31 ／ 更新責任者: （未定）
+> 対象範囲: 情報分類・入力可否・保持/削除・越境・DPA・調達確認・統制の実装 ／ 対象外: 組織の責任分担（→04）、製品別の詳細比較（→06）
+> 対象地域 / 対象契約: 日本 / 法人契約（Team・Business・Enterprise・API）。個人プラン（Free/Plus/Pro等）は比較のみ。
+>   プラン・地域で成立条件が変わる主張は都度、適用条件を併記する。
+> 確認日: 2026-07-13 ／ 再確認期限: 2026-10-31 ／ 更新責任者: （未定）
 > 関連Issue: #6
 
-> ⚠️ 「学習」「推論時処理」「保存」「ログ」「保持」「削除」「サブプロセッサー提供」は
-> **別概念**として区別して書く（用語集参照）。
+> ⚠️ 「学習利用」「推論時処理」「保存 / ログ / 保持」「削除」「サブプロセッサー」は
+> **別概念**として区別して書く（[用語集](../docs/glossary.md)参照）。
 
 ## 要約（結論先出し）
 
-- （執筆時に記入）
+- 論点は2つに分けて考える。**① 学習に使われるか**（法人契約ではほぼ解決済み）と、
+  **② 社外にデータが送信されること自体**（契約形態によらず残る）。ポリシーは②を基準に作る（1節）。
+- 情報は「AI専用の新しい区分」を作らず、既存の情報区分に**入力可否を紐づける**形で整理する。
+  判断軸は学習リスクではなく**開示リスク（漏れたときの実害）**（2節）。
+- 通常業務は法人SaaS（層A）、機微度が高い領域は自社クラウド経由（層B: Bedrock/Azure/Vertex）、
+  という**階層構成**が実務的（3節）。
+- 情シスが最初に締めるべき設定は、禁止事項の作文より先に、**SSO+SCIM・監査ログ・データ保持期間・
+  コネクタ許可制**（4節）。
+- エージェント固有のリスクとして**権限越境**（アクセス権はあるが本来その用途では見ない情報が
+  横断的に読まれ、別文脈に再出力されるリスク）がある。これは従来のSaaS・ストレージには
+  無かった論点であり、コネクタ許可制と最小権限設計が本丸になる（5節、詳細は [08](08-it-dept-agents.md)）。
 
 ## 1. まず2つの論点を分ける
 
-- **① 学習利用されるか** … 法人契約でほぼ解決（既定で学習に使わない、要一次情報確認）。
-- **② 社外送信そのもの** … 契約では消えない（ログ保持・越境移転・NDA上の第三者開示該当性・
-  ベンダー側インシデント・サブプロセッサー）。ポリシーは②基準。
+議論が混乱しやすいので、最初に分けて考える。
 
-## 2. 情報分類と入力可否（3段階・草案）
+### 1.1 論点①：学習利用されるか
 
-- 原則OK ／ 条件付き（法人プラン＋マスキング）／ 原則NG（個人情報・NDA対象・認証情報・
-  未公表財務・営業秘密中核・業法制限データ）。
-- **マスキングが実務のカギ**：漏れて実害が出る箇所だけ伏せる。
+法人契約ではほぼ解決している。OpenAI・Anthropicとも、商用製品では入力・出力を既定でモデル学習に
+使用しないと公式に明記している。
 
-## 3. 契約・調達で確認する質問（法的結論ではなく質問に落とす）
+- **OpenAI**: ChatGPT Business / Enterprise / Edu / API Platform（2023年3月1日以降）のデータは、
+  既定ではモデル学習に使用されない（オプトインした場合を除く）
+  （[OpenAI「Enterprise privacy at OpenAI」][ref-openai-privacy]、確認日: 2026-07-13）。
+- **Anthropic**: Claude for Work（Team/Enterprise）、Anthropic API、Claude Gov等の商用製品では、
+  既定で入力・出力をモデル学習に使用しない
+  （[Anthropic Privacy Center「Is my data used for model training?」][ref-anthropic-training]、確認日: 2026-07-13）。
+  Claude Codeについても、商用契約下で送信されたコード・プロンプトは、Development Partner Program等で
+  明示的に提供を選択しない限り学習に使わない
+  （[Claude Code Docs「Data usage」][ref-claudecode-datausage]、確認日: 2026-07-13）。
+- **個人プラン（Free/Plus/Pro/Max等）は対象外**。設定次第で学習対象になり得るため、業務利用は
+  不可とする（[06](06-vendor-plans.md) に各社設定の詳細）。
 
-- DPA・サブプロセッサー・データレジデンシー・保持/削除・知的財産・監査対応。
-- 情報区分と利用形態の対応表を用意する。
+### 1.2 論点②：社外にデータが送信されること自体
 
-## 4. 脅威と対策（概観）
+これは契約では消えない。以下は法人契約であっても残る。
 
-- 情報漏えい経路、越境移転（法28条相当の整理）。詳細な脅威モデルは後続Issue。
+- 一定期間のログ保持（保持期間はプランごとに設定可能。3.3節）。
+- 越境移転（データがどの国のサーバーで処理・保存されるか。3.4節）。
+- NDA上の「第三者提供」への該当性（委託先としての取り扱いになるかは契約構成次第）。
+- ベンダー側のインシデント（情報漏えい等）のリスク。
+- サブプロセッサー（再委託先）への提供。
 
-## 5. 記事末尾の成果物
+**ポリシーは②を基準に設計する。** 「学習されないから何を入れてもよい」という理解は誤りである。
 
-- 情報区分×利用形態 対応表、契約確認質問票（雛形は [付録](appendix/README.md)）。
+## 2. 情報分類と入力可否
+
+### 2.1 新しい分類を作らない
+
+AI専用の新しい情報区分を作ると、現場が覚えられず形骸化する。**既存の社内情報区分
+（例: 公開／社外秘／極秘）に、「どの区分までAIに入力してよいか」を紐づける**形にする。
+
+判断軸は「学習されるリスク」ではなく「**漏れたときの実害（開示リスク）**」。この考え方は
+他のクラウドサービス（外部ストレージ、SFA等）への機密情報の預け先を選ぶときと基本的に同じであり、
+AIだけを特別扱いする理由はない。
+
+### 2.2 3段階の目安
+
+この3段階は、[01](01-adoption-criteria.md)1.1節の用途判定（**許可＝原則OK、条件付き＝条件付き、
+禁止＝原則NG**）と同じ区分を、情報区分の観点から言い換えたものである。用途を判定するときは
+[01](01-adoption-criteria.md)、入力する情報そのものを判定するときは本表を使う（実務上はほぼ
+同じ結果になる）。
+
+| 区分 | 該当例 | 入力可否 |
+| --- | --- | --- |
+| 原則OK（[01](01-adoption-criteria.md)の「許可」に対応） | 公開情報、一般的な社内文書、文章の推敲・要約・体裁、汎用的なコード、統計化・匿名化済みデータ | 可 |
+| 条件付き（[01](01-adoption-criteria.md)の「条件付き」に対応） | 社内限定の企画書・議事録、顧客名を伏せた事例、非公開の設計資料、社内数値 | 法人プラン＋マスキング前提で可 |
+| 原則NG（[01](01-adoption-criteria.md)の「禁止」に対応） | 個人情報（特に要配慮情報）、他社NDA対象の情報、認証情報・APIキー、未公表の財務・M&A情報、営業秘密の中核、業法で外部持出しが制限されるデータ | 不可（例外申請の対象） |
+
+### 2.3 マスキングが実務のカギ
+
+固有名詞・具体的数値を「顧客A」「X億円」のように置換すれば、多くの「条件付き」案件は安全に
+「原則OK」側へ動かせる。全てを伏せる必要はなく、**漏れて実害が出る箇所だけ**で十分。
+マスキングしても意味が失われる情報（伏せると案件が特定できてしまう等）は、情シスへの
+相談・例外申請の対象とする（例外申請フロー・窓口の設計は [04](04-governance.md)）。
+
+## 3. 3層データ区分モデル：どの経路にどこまで入力してよいか
+
+情報区分（2節）を実際の技術構成に落とすと、経路を3層に分けて考えるのが実務的である。
+「機密情報は入力禁止」とだけ書いたポリシーは、業務が回らず結局この階層構成の検討が必要になる。
+**最初から受け皿を用意しておく**のが実務上の分かれ目になる。
+
+| 層 | 構成 | 入力可能な情報の目安 | 特徴 |
+| --- | --- | --- | --- |
+| 層A | Claude Team/Enterprise、ChatGPT Business/Enterprise（法人SaaS） | 公開情報〜社外秘（マスキング前提） | 導入が最も容易。座席課金。[06](06-vendor-plans.md) |
+| 層B | Amazon Bedrock / Microsoft Foundry（Azure OpenAI含む） / Google Vertex AI 経由 | 顧客データ・個人情報を含む処理（自社の既存クラウド契約の枠内で完結） | 自社クラウド環境の管理下に置ける。[07](07-delivery-architecture-exit.md) |
+| 層C | オンプレ／ローカルLLM、または入力禁止 | 極秘・業法規制データ | 導入コストが高い。本記事の対象外 |
+
+層Bの技術的な位置づけ（データがどこで処理されるか）は次の通り確認できている。
+
+- **Amazon Bedrock**: モデル提供元（Anthropic等）は、Bedrock上の顧客のプロンプト・応答に
+  アクセスできない構成になっている。「モデル提供元はBedrockのログや顧客のプロンプト・完了結果に
+  アクセスできない」（[AWS「Data protection」（Amazon Bedrock User Guide）][ref-aws-bedrock-dataprotection]、確認日: 2026-07-13）。
+  コンテンツはモデルの改善にも使われない（[AWS「Amazon Bedrock FAQs」][ref-aws-bedrock-faq]、確認日: 2026-07-13）。
+- **Microsoft Foundry（Azure OpenAI含む）**: プロンプト・出力はOpenAI等のモデル提供元からは
+  アクセスできず、モデル提供元の許可なく学習にも使われない。「モデルはステートレスであり、
+  プロンプトも完了結果もモデル内に保存されない」（[Microsoft Learn「Data, privacy, and security for
+  Foundry Models sold by Azure」][ref-msft-foundry-privacy]、確認日: 2026-07-13）。Claude on Microsoft Foundryの
+  場合も、Azureホスト構成ではプロンプト・応答はAzure内に留まり、Anthropicには使用状況メタデータと
+  安全システムがフラグしたコンテンツのみが渡る（[Claude Platform Docs「Claude in Microsoft Foundry」][ref-claude-foundry]、確認日: 2026-07-13）。
+- **Google Vertex AI**: Claudeモデルの利用時、「データの取り扱いはGoogle Cloudが管理する」
+  （[Claude Platform Docs「Claude on Google Cloud」][ref-claude-vertex]、確認日: 2026-07-13）。
+
+「クラウド境界内で完結」という表現は**成立条件付きの事実**である。実際の契約構成・リージョン設定・
+サブプロセッサーの範囲を確認して初めて言えるため、断定表現は避け、都度出典と条件を明記する
+（[用語集](../docs/glossary.md)「クラウド境界内」参照）。
+
+### 3.1 「金融でも使えるレベル」という主張の注意点
+
+法人プランは「学習しない前提」であり、業種を問わず一定の水準を満たす設計にはなっている。ただし
+「金融機関でも通用する統制水準」という主張をする場合、正確には**「Enterprise + データレジデンシー
++ 監査ログ + DPA」または「Bedrock/Azure経由」の構成が、業法・監査要件に照らして通る**という
+話であり、**素のTeamプランと同一視してはならない**。Teamプランは統制機能が相対的に弱いため、
+「統制の効く小集団（情シス）に限定して使う」という論理が必要になる（[06](06-vendor-plans.md) で
+プランごとの機能差を詳細比較）。
+
+### 3.2 データ保持期間（Retention）
+
+各社とも法人プランでデータ保持期間を管理者が設定できるが、既定値・下限値が異なる。
+
+| 対象 | 既定 | カスタム設定の下限 | 出典 |
+| --- | --- | --- | --- |
+| Claude Enterprise | 無期限保持 | 30日（Owner/Primary Ownerが設定） | [Anthropic Privacy Center][ref-anthropic-retention]（確認日: 2026-07-13） |
+| ChatGPT Enterprise | 要問い合わせ（ワークスペース単位で設定可） | 90日 | [OpenAI Help Center][ref-openai-retention]（検索経由の確認。確認日: 2026-07-13。**原典の逐語確認は未実施のため要再確認**） |
+
+Claude Enterpriseでは、保持期間を短く設定変更すると、新しい保持期間の対象外になったデータは
+**保存時点で即座に削除され、復旧できない**点に注意（[ref-anthropic-retention]）。運用ルールに
+明記しておく。
+
+### 3.3 データレジデンシー（データの保存先リージョン）
+
+確認時点で、両社の対応状況には非対称がある。
+
+- **OpenAI**: ChatGPT Enterprise / Edu / API Platformにおいて、日本を含む欧州・英国・米国・カナダ・
+  韓国・シンガポール・インド・オーストラリア・UAE等でデータレジデンシー（保存先リージョン指定）に
+  対応（[OpenAI「Expanding data residency access to business customers worldwide」][ref-openai-residency]、
+  検索経由の確認、確認日: 2026-07-13）。ただし推論処理自体の既定所在地は引き続き米国である旨の
+  注記があり、「保存場所」と「推論処理の場所」は別問題である点に注意。
+- **Anthropic**: 確認時点の公式ドキュメントでは、ワークスペースのgeo設定は**米国（"us"）のみ**
+  対応となっている（[Claude Platform Docs「Data residency」][ref-claude-residency]、確認日: 2026-07-13）。
+  日本を含む個別リージョン指定は現時点で確認できない。二次情報でEU向けデータレジデンシーの
+  案内が見られるが、上記公式ドキュメントの現行記載と一致しないため「不明・要問い合わせ」とする。
+
+この非対称性は比較表で強調すべき重要な差分であり、**変化の速い分野のため稟議・公開の直前に
+必ず再確認する**こと。
+
+## 4. 情シスが最初に締める設定（統制の本体）
+
+ポリシー文書に「機密情報は入力禁止」とだけ書いても、DLPでプロンプト内容を完全検査するのは
+非現実的である。現実的な統制は、**設定でどこまで強制できるか**に軸足を置く。
+
+- **SSO（SAML/OIDC）＋ SCIM**: 退職者の即時遮断に必須。Claude・ChatGPTともTeam/Enterpriseで
+  SSOに対応（[Claude Help Center「Set up single sign-on (SSO)」][ref-claude-sso]、
+  [ChatGPT公式比較表][ref-chatgpt-pricing]、確認日: 2026-07-13）。ただしSCIM・IP許可リスト・
+  RBAC等の詳細機能はプラン間で差があるため [06](06-vendor-plans.md) の比較表で確認する。
+- **ドメイン認証／ドメインキャプチャ**: 社員が会社メールで作った個人アカウントを組織配下に
+  回収する機能。シャドーAI対策の要（[01](01-adoption-criteria.md) 3節）。
+- **監査ログのエクスポート／Compliance API**: 誰が何をしたかの追跡。Claude・ChatGPTともEnterprise
+  クラスで対応（詳細は [06](06-vendor-plans.md)）。
+- **データ保持期間のカスタム設定**（3.2節）。
+- **データレジデンシー**（3.3節）。越境移転の整理を楽にする。
+- **コネクタ／外部アプリ／MCPの許可制**: 見落としがちだが重要。SharePoint・Google Drive等の
+  外部連携を野放しにすると、入力禁止にした文書がAIコネクタ経由で参照されてしまう。Claudeは
+  組織単位でコネクタを管理者が有効化し、ツール呼び出し単位で「常に許可／要承認／ブロック」の
+  粒度で制御できる（[Claude Help Center「Authorize MCP connectors for your entire organization」][ref-claude-mcp-org]、
+  確認日: 2026-07-13）。ChatGPTはEnterprise/Eduワークスペースでは外部アプリが既定で無効、
+  Businessワークスペースでは既定で有効という違いがある
+  （[OpenAI Help Center「Admin Controls, Security, and Compliance in apps」][ref-openai-apps-admin]、
+  検索経由の確認、確認日: 2026-07-13）。**アプリ承認をデフォルト無効にして棚卸しする**のが安全側の設計。
+- **モデル・機能のRBAC（役割ベースアクセス制御）**。
+
+## 5. 開発現場（Claude Code / Codex）特有の統制
+
+コーディングエージェントの活用（詳細は [09](09-coding-agents.md)）には固有の統制事項がある。
+
+- **`.claudeignore` は公式機能として存在しない**（誤解が多い点）。機密ディレクトリの除外は
+  `settings.json` の `permissions.deny` に `Read()` パターンを書く方式が正式である
+  （例: `"deny": ["Read(./.env)", "Read(./secrets/**)"]`。[Claude Code Docs「Settings」][ref-claudecode-settings]、
+  確認日: 2026-07-13）。ただしBashコマンド経由の抜け道が理論上あるため、サンドボックスや
+  実行環境分離と併用する（[09](09-coding-agents.md) で詳細）。
+- **`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` 環境変数**で、テレメトリ・エラーレポート・
+  `/feedback`関連の追加通信など非必須トラフィックを抑止できる
+  （[Claude Code Docs「Environment variables」][ref-claudecode-envvars]、確認日: 2026-07-13）。
+- **`/feedback` コマンドの扱いを明文化する**: 実行すると、その時点の会話履歴（コードを含む）が
+  Anthropicに送信され、Google Cloud Storageに5年間保持される（APIキー等のパターンは自動的に
+  redactされる）。社内では原則禁止とし、必要な場合のみ許可する運用が無難
+  （[Claude Code Docs「Data usage」][ref-claudecode-datausage]、確認日: 2026-07-13）。オプトアウトは
+  `DISABLE_FEEDBACK_COMMAND=1` 環境変数で可能。
+- **リポジトリ側のシークレットスキャン**を併用し、APIキー等の混入をコード側でも検知する。
+
+## 6. 契約・調達で確認する質問（法的結論ではなく質問に落とす）
+
+法務・調達担当と連携する際は、断定的な法的結論を出す前に、次の質問に対する回答を各社の
+DPA・公式ドキュメントから確認する。
+
+- DPA（データ処理契約）は締結できるか。標準契約条項（SCC）は含まれるか。
+  - Anthropic: 商用利用規約に自動的に組み込まれる（[Anthropic「Data Processing Addendum」][ref-anthropic-dpa]、確認日: 2026-07-13）。
+  - OpenAI: Business Terms / Enterprise Agreement等の下で適用（[OpenAI「Data Processing Addendum」][ref-openai-dpa]、確認日: 2026-07-13）。
+- サブプロセッサー（再委託先）の一覧は公開されているか。変更時の通知はあるか。
+- データはどのリージョンに保存されるか（3.3節）。越境移転にあたる場合、個人情報保護法上の
+  整理（本人同意／基準適合体制／法27条1項各号該当等）はどうなるか。
+  - 越境移転規制の原則: 「個人情報取扱事業者が外国にある第三者に個人データを提供する場合、
+    原則としてあらかじめ本人の同意が必要」（個人情報保護法第28条第1項）。委託先が外国にある場合も
+    同様に整理が必要（[個人情報保護委員会 FAQ Q12-1][ref-ppc-faq]、確認日: 2026-07-13）。
+    「委託だから第三者提供規制が及ばない」という単純化はできない。
+- 取得済みの第三者認証は何か、対象サービス・適用範囲はどこまでか。
+  - Anthropic: ISO/IEC 27001:2022、ISO/IEC 42001:2023、SOC 2 Type I & II（商用製品対象）、
+    HIPAA対応構成（BAA提供可）（[Anthropic Privacy Center「What Certifications has Anthropic obtained?」][ref-anthropic-certs]、確認日: 2026-07-13）。
+  - OpenAI: SOC 2 Type II（API・ChatGPTビジネス系サービス対象）、ISO/IEC 27001:2022、
+    ISO/IEC 27701:2019、ISO/IEC 42001:2023等（[OpenAI Trust Portal][ref-openai-trust]、
+    検索経由の確認。詳細証跡はTrust Portalアカウント登録が必要、確認日: 2026-07-13）。
+- インシデント発生時の通知義務・SLAはどう定められているか。
+
+質問票の雛形は [付録](appendix/README.md) に用意する。
+
+## 7. 「守られるガイドライン」の書き方
+
+- 禁止事項を列挙しただけのポリシーは、社員が個人アカウントに逃げる（シャドーAI化）ため逆効果。
+  法人プランを十分に配布し、迷ったら聞ける窓口を置くことをセットにする（[04](04-governance.md)）。
+- 現実解は、禁止列挙ではなく**変換ルール**（マスキング）で書くこと（2.3節）。
+- 判断に迷う案件を吸い上げる**例外申請窓口**（目安SLA 2営業日程度）を必ず併設する
+  （窓口の設計は [04](04-governance.md)）。窓口が無いポリシーは、現場で「黙って使う」に変換される。
+- 出力側のレビュー義務（そのまま社外提出しない）、退職者アカウントの即時停止、SSO・監査ログを
+  ガイドラインに含める。
+
+## 記事末尾の成果物
+
+- 情報区分×利用形態（層A/B/C）対応表
+- 契約確認質問票（DPA・サブプロセッサー・レジデンシー・保持/削除・認証）
+
+（雛形は [付録](appendix/README.md) に用意する。）
+
+## 自社（情シス小規模導入）への当てはめ
+
+- 初期パイロットは層A（法人SaaS、[06](06-vendor-plans.md)のTeam/Enterprise）から開始し、
+  個人情報・NDA対象データが必要になった時点で層B（Bedrock/Azure/Vertex）の検討に進む
+  （[11](11-rollout-gates.md) の判断ゲート）。
+- SSO+SCIM・監査ログ・データ保持期間・コネクタ許可制は、情シス限定の小規模導入であっても
+  最初から設定しておく（後から追加するより最初から統制ありで始めるほうが安い）。
+- 例外申請窓口は情シス部門内の担当者1〜2名で最初は十分。SLA目安2営業日で運用を試す。
 
 ## 留意点・免責
 
-- 法的整理は一般論。最終判断は法務・専門家と各社DPA/公式で確認。比較表の空欄は
-  「非対応／不明／要問い合わせ／契約依存」で明示。
+- 法務・税務・個人情報保護法に関わる判断は、最終的に法務・専門家の確認が必要。
+- 各社のプラン・仕様・認証取得状況は数ヶ月単位で変わる。本記事の記載は2026-07-13時点の確認に
+  基づく。稟議・公開の直前に必ず一次情報を再確認すること。
+- 検索結果のスニペット経由でのみ確認できた記載（OpenAI Help Center系の一部）は、原文の逐語確認が
+  未実施。記事化・稟議提出前に実際にページを開いて再確認することを推奨する。
 
 ## 参考文献
 
-<!-- 各社プライバシー/商用利用規約/Trust Center、個人情報保護委員会・e-Gov等の原典を追加 -->
+[ref-openai-privacy]: https://openai.com/enterprise-privacy/ "OpenAI — Enterprise privacy at OpenAI（確認日: 2026-07-13）"
+[ref-anthropic-training]: https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training "Anthropic Privacy Center — Is my data used for model training?（確認日: 2026-07-13）"
+[ref-claudecode-datausage]: https://code.claude.com/docs/en/data-usage "Anthropic — Claude Code Docs: Data usage（確認日: 2026-07-13）"
+[ref-aws-bedrock-dataprotection]: https://docs.aws.amazon.com/bedrock/latest/userguide/data-protection.html "AWS — Amazon Bedrock User Guide: Data protection（確認日: 2026-07-13）"
+[ref-aws-bedrock-faq]: https://aws.amazon.com/bedrock/faqs/ "AWS — Amazon Bedrock FAQs（確認日: 2026-07-13）"
+[ref-msft-foundry-privacy]: https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy "Microsoft Learn — Data, privacy, and security for Foundry Models sold by Azure in Microsoft Foundry（確認日: 2026-07-13）"
+[ref-claude-foundry]: https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry "Anthropic — Claude Platform Docs: Claude in Microsoft Foundry（確認日: 2026-07-13）"
+[ref-claude-vertex]: https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai "Anthropic — Claude Platform Docs: Claude on Google Cloud（確認日: 2026-07-13）"
+[ref-anthropic-retention]: https://privacy.claude.com/en/articles/10440198-configure-custom-data-retention-controls-for-enterprise-plans "Anthropic Privacy Center — Configure custom data retention controls for Enterprise plans（確認日: 2026-07-13）"
+[ref-openai-retention]: https://help.openai.com/en/articles/8983778-chat-and-file-retention-policies-in-chatgpt "OpenAI Help Center — Chat and File Retention Policies in ChatGPT（検索経由の確認・要再確認。確認日: 2026-07-13）"
+[ref-openai-residency]: https://openai.com/index/expanding-data-residency-access-to-business-customers-worldwide/ "OpenAI — Expanding data residency access to business customers worldwide（検索経由の確認。確認日: 2026-07-13）"
+[ref-claude-residency]: https://platform.claude.com/docs/en/manage-claude/data-residency "Anthropic — Claude Platform Docs: Data residency（確認日: 2026-07-13）"
+[ref-claude-sso]: https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso "Claude Help Center — Set up single sign-on (SSO)（確認日: 2026-07-13）"
+[ref-claude-mcp-org]: https://support.claude.com/en/articles/15537633-authorize-mcp-connectors-for-your-entire-organization "Claude Help Center — Authorize MCP connectors for your entire organization（確認日: 2026-07-13）"
+[ref-openai-apps-admin]: https://help.openai.com/en/articles/11509118-admin-controls-security-and-compliance-in-apps-connectors-enterprise-edu-and-business "OpenAI Help Center — Admin Controls, Security, and Compliance in apps（検索経由の確認・要再確認。確認日: 2026-07-13）"
+[ref-claudecode-settings]: https://code.claude.com/docs/en/settings "Anthropic — Claude Code Docs: Settings（確認日: 2026-07-13）"
+[ref-claudecode-envvars]: https://code.claude.com/docs/en/env-vars "Anthropic — Claude Code Docs: Environment variables（確認日: 2026-07-13）"
+[ref-anthropic-dpa]: https://www.anthropic.com/legal/data-processing-addendum "Anthropic — Data Processing Addendum（確認日: 2026-07-13）"
+[ref-openai-dpa]: https://openai.com/policies/data-processing-addendum/ "OpenAI — Data Processing Addendum（検索経由の確認。確認日: 2026-07-13）"
+[ref-ppc-faq]: https://www.ppc.go.jp/all_faq_index/faq1-q12-1/ "個人情報保護委員会 — よくある質問 Q12-1（確認日: 2026-07-13）"
+[ref-anthropic-certs]: https://privacy.claude.com/en/articles/10015870-what-certifications-has-anthropic-obtained "Anthropic Privacy Center — What Certifications has Anthropic obtained?（確認日: 2026-07-13）"
+[ref-openai-trust]: https://trust.openai.com/ "OpenAI Trust Portal（検索経由の確認。詳細証跡は要アカウント登録。確認日: 2026-07-13）"
+[ref-chatgpt-pricing]: https://chatgpt.com/pricing "OpenAI — ChatGPT のプラン（比較表を含む。確認日: 2026-07-13）"

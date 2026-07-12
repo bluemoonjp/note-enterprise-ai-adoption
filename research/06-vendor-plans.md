@@ -1,52 +1,151 @@
 # 06 製品・プラン別統制機能比較
 
-> ステータス: アウトライン
-> 対象読者: 情シス／社内SE・調達
+> ステータス: 初稿
+> 対象読者: 情シス部門内（プラン選定の実務判断に使う）＋上層・調達（費用と統制水準の対応を理解する）の二層。詳細は00参照
 > この記事が答える問い: 各社のプラン・契約形態で、統制機能と学習/履歴/保持がどう違うか
 > 対象範囲: ベンダー×契約形態の統制機能比較 ／ 対象外: 提供方式/基盤の選択（→07）、入力可否の原則（→05）
-> 対象地域 / 対象契約: 日本 / 個人・法人（Team/Enterprise）・API 契約を横断比較（プラン・地域で成立条件が変わる主張は適用条件を併記）
-> 確認日: 2026-07-12 ／ 再確認期限: 2026-10-31 ／ 更新責任者: （未定）
+> 対象地域 / 対象契約: 日本 / 個人・法人（Team/Business）・Enterprise・API 契約を横断比較（プラン・地域で成立条件が変わる主張は適用条件を併記）
+> 確認日: 2026-07-13 ／ 再確認期限: 2026-10-31 ／ 更新責任者: （未定）
 > 関連Issue: #7
 
-> ⚠️ 変化が速い。**すべての事実に一次情報リンク＋確認日**。比較は「同一確認日・同一比較軸」で。
-> 料金と機能は契約単位で区別する。
+> ⚠️ 変化が速い分野。**すべての事実に一次情報リンク＋確認日**。比較は「同一確認日・同一比較軸」で行う。
+> 料金と機能は契約単位で区別する。空欄は使わず、非対応／不明／要問い合わせ／契約依存を明示する。
 
 ## 要約（結論先出し）
 
-- （執筆時に記入）
+- **結論: 情シス限定導入は、まず座席課金の法人プラン（Team/Business、[05](05-security-legal-procurement.md)3節の
+  層A）から始め、統制要件（SSO+SCIM・監査ログ・データレジデンシー等）が必要になった時点で
+  Enterpriseまたは層B（Bedrock/Foundry/Vertex、[07](07-delivery-architecture-exit.md)）に進む**、
+  という段階設計が現実的。
+- 根拠: Claude・ChatGPTとも、**個人プラン→法人プラン（Team/Business）→Enterprise**の順で統制機能が
+  段階的に強化される構造は共通している。ただし**どの機能がどの段階で付くかは各社で異なる**ため、
+  「法人プランだから統制は十分」と一括りにしない（2節）。特に**SCIM・RBAC・監査ログ（Compliance
+  API）・IP許可リスト・データレジデンシー**は、ChatGPTではBusinessでは非対応、Enterpriseで
+  初めて対応という明確な線引きがある（2.2節）。Claudeは Enterprise級機能の詳細な線引きが
+  一次情報からは一部確認しきれておらず、要問い合わせとする。
+- 反論への回答: 全社導入では、統制の効くEnterprise級（または層Bのクラウド経由）がほぼ必須になる。
+  「情シス限定導入は中途半端では」という疑問には、**「全社展開のミニ版」ではなく「統制の効く
+  小集団に、まず限定して使う」という別の論理**で答える（3節、詳細は [11](11-rollout-gates.md)）。
+- 次のアクション: 2.2節の比較表で自社の必須要件（SSO/SCIM・監査ログ・データレジデンシー等）を
+  洗い出し、「不明・要問い合わせ」項目はベンダーへの確認事項リストにする。
 
 ## 1. 比較軸（固定）
 
-- 学習利用（既定）／履歴保持／保持期間設定／SSO・SCIM／監査ログ／データレジデンシー／
-  RBAC／コネクタ許可制／認証（SOC 2・ISO 27001・ISO 42001、適用範囲・有効期間まで）。
+学習利用（既定）／履歴・保持期間設定／SSO・SCIM／監査ログ（Compliance API）／
+データレジデンシー／RBAC／IP許可リスト／コネクタ許可制／DPA／取得済み認証
+（SOC 2・ISO 27001・ISO 42001、対象サービス・適用範囲まで）。
 
-## 2. 比較表（ベンダー×契約形態、記入予定）
+## 2. 比較表（ベンダー×契約形態）
 
-| 比較軸 | 個人 | 法人(Team/Business) | Enterprise | API |
+### 2.1 料金（座席課金・確認時点）
+
+| プラン | 料金 | 最低契約数 | 対象 | 出典 |
 | --- | --- | --- | --- | --- |
-| 学習利用（既定） | | | | |
-| 履歴・保持期間設定 | | | | |
-| SSO/SCIM | | | | |
-| 監査ログ | | | | |
-| データレジデンシー | | | | |
-| コネクタ許可制 | | | | |
-| DPA | | | | |
+| Claude Free | ¥0 | — | 個人 | [Claude Pricing][ref-claude-pricing] |
+| Claude Pro | $17/月（年払い、月払いは$20） | — | 個人 | [Claude Pricing][ref-claude-pricing] |
+| Claude Max | $100/月（5x）〜$200/月（20x） | — | 個人（月額のみ） | [Claude Help Center][ref-claude-max] |
+| Claude Team Standard | $20/席/月（年払い、月払いは$25） | 5〜150席 | 法人 | [Claude Pricing][ref-claude-pricing] |
+| Claude Team Premium | $100/席/月（年払い、月払いは$125） | 5x利用量 | 法人 | [Claude Pricing][ref-claude-pricing] |
+| Claude Enterprise | $20/席/月＋利用量別課金（年契約のみ） | Self-serve 20席〜、営業経由50席〜 | 大組織 | [Claude Help Center][ref-claude-enterprise] |
+| ChatGPT Free | ¥0 | — | 個人 | [ChatGPT Pricing][ref-chatgpt-pricing] |
+| ChatGPT Go | ¥1,400/月 | — | 個人 | [ChatGPT Pricing][ref-chatgpt-pricing] |
+| ChatGPT Plus | ¥3,000/月 | — | 個人 | [ChatGPT Pricing][ref-chatgpt-pricing] |
+| ChatGPT Pro | ¥16,800/月〜 | — | 個人 | [ChatGPT Pricing][ref-chatgpt-pricing] |
+| ChatGPT Business | ¥3,050/ユーザー/月（年払い、月払いは¥3,850） | 2名〜 | 法人 | [ChatGPT Pricing][ref-chatgpt-pricing] |
+| ChatGPT Enterprise | 個別見積り | 要問い合わせ | 大組織 | [ChatGPT Pricing][ref-chatgpt-pricing] |
 
-（空欄禁止＝非対応/不明/要問い合わせ/契約依存を明示。各セルに出典＋確認日）
+（税抜き表示。ChatGPT Businessは2025-08-29付でChatGPT Teamから改称された経緯がある
+（[OpenAI「ChatGPT Business Rename FAQ」][ref-chatgpt-rename]、検索経由の確認）。**改称自体と
+料金改定（年払い$25→$20/席/月、月払い$30→$25/席/月への引き下げ）は別時期の別イベントである
+可能性が高く**、現在表示されている料金（本表の数値）は最新のもので正しいが、時系列の対応関係は
+一次情報で再確認できていない。確認日: 2026-07-13）
+
+### 2.2 統制機能比較（法人プラン・Enterprise）
+
+| 比較軸 | Claude Team | Claude Enterprise | ChatGPT Business | ChatGPT Enterprise |
+| --- | --- | --- | --- | --- |
+| 学習利用（既定） | 使わない | 使わない | 使わない | 使わない |
+| SSO（SAML） | 対応 | 対応 | 対応 | 対応 |
+| SCIM自動プロビジョニング | 不明・要問い合わせ | 対応 | **非対応** | 対応 |
+| ドメイン認証 | 不明・要問い合わせ | 対応（ドメインキャプチャ含む） | 対応 | 対応 |
+| RBAC（役割ベースアクセス制御） | 不明・要問い合わせ | 対応 | **非対応** | 対応 |
+| 監査ログ／Compliance API | 不明・要問い合わせ | 対応 | **非対応** | 対応 |
+| IP許可リスト | 不明・要問い合わせ | 不明・要問い合わせ | **非対応** | 対応 |
+| データレジデンシー選択 | 不明・要問い合わせ | 不明・要問い合わせ（3.3節の非対称性を参照） | **非対応** | 対応（日本含む） |
+| データ保持期間カスタム設定 | 不明・要問い合わせ | 対応（30日〜） | 不明・要問い合わせ | 対応（90日〜、検索経由の確認） |
+| コネクタ／MCP許可制 | 対応（組織単位で管理可） | 対応 | 対応（既定で有効、要棚卸し） | 対応（既定で無効） |
+| SOC 2 Type II | 不明・要問い合わせ | 対応（Type I&II、[05](05-security-legal-procurement.md)6節） | 不明・要問い合わせ | 対応（[05](05-security-legal-procurement.md)6節） |
+| ISO/IEC 27001 | 不明・要問い合わせ | 対応（[05](05-security-legal-procurement.md)6節） | 不明・要問い合わせ | 対応（[05](05-security-legal-procurement.md)6節） |
+| ISO/IEC 42001（AIマネジメント） | 不明・要問い合わせ | 対応（[05](05-security-legal-procurement.md)6節） | 不明・要問い合わせ | 不明・要問い合わせ（OpenAIは「consumer and business AI products」対象と案内、プラン別の明記は未確認） |
+| ISO 27017/27018/27701 | 不明・要問い合わせ（Anthropicの認証一覧に記載なし、[05](05-security-legal-procurement.md)6節） | 不明・要問い合わせ（同左） | **非対応** | 対応（OpenAI公式比較表で確認） |
+| DPA | 対応 | 対応 | 対応 | 対応 |
+
+出典: [Claude Enterprise（製品ページ）][ref-claude-enterprise-solutions]、[Claude Help Center — SSO][ref-claude-sso]、
+[Claude Help Center — Authorize MCP connectors][ref-claude-mcp-org]、[ChatGPT Pricing（比較表）][ref-chatgpt-pricing]、
+[Anthropic Privacy Center — 認証][ref-anthropic-certs]、[OpenAI Trust Portal][ref-openai-trust]（確認日: 2026-07-13）
+
+**読み方の注意**: ChatGPTはBusiness/Enterpriseの機能差が公式比較表で明確に線引きされている一方、
+Claudeは Team と Enterprise の機能差について、SCIM・RBAC・監査ログ等の対応可否を明記した
+一次情報を今回のリサーチでは特定できなかった（「不明・要問い合わせ」の欄が多い）。**プラン選定前に
+必ず営業担当・最新の管理者ドキュメントで確認すること。** この非対称性自体が、稟議で
+「なぜEnterpriseが必要か／不要か」を説明する際の論点になる。
+
+### 2.3 開発者向け（Claude Code / Codex）
+
+| 項目 | Claude Code | Codex（OpenAI） |
+| --- | --- | --- |
+| 提供方式の選択肢 | Claude for Teams/Enterprise（座席課金）、Claude Console（従量課金）、Bedrock/Vertex/Foundry経由 | ChatGPT Business/Enterprise経由の座席課金、またはAPI従量課金 |
+| 座席課金プランでの利用条件 | Team Premium（$100/席/月）で利用可能という情報あり。Team Standard（$20/席/月）が対象に含まれるかは要再確認 | Business: $20/ユーザー/月（年払い）。Enterprise: 要問い合わせ |
+| 従量課金の単位 | APIトークン単位（Console/Bedrock/Vertex/Foundry） | クレジット制（入力/キャッシュ入力/出力トークンごとにクレジット消費） |
+| Enterprise向け統制 | SSO/SCIM/監査ログ等はプラットフォーム側（claude.ai Enterprise or Bedrock/Vertex/Foundryの契約）に準拠 | SCIM/EKM/RBAC/監査ログ/データ保持制御に対応 |
+
+出典: [Claude Code Docs — Set up Claude Code for your organization][ref-claudecode-admin]、
+[OpenAI — Codex Pricing][ref-codex-pricing]（確認日: 2026-07-13）
 
 ## 3. IT部門導入 vs 全社導入の違い
 
-- 全社は統制の効く Enterprise 級が必要になりやすい。IT部門限定は「統制の効く小集団に限定」の
-  論理で通す（→ [11](11-rollout-gates.md)）。
+- **全社導入**は、部署ごとに扱う情報の機密度・業務内容が多様であるため、統制の効く
+  **Enterprise級（または層B＝Bedrock/Foundry/Vertex経由、[05](05-security-legal-procurement.md)3節）**が
+  ほぼ必須になりやすい。SCIM・RBAC・監査ログ・データレジデンシーが揃わない構成で全社展開すると、
+  退職者アカウントの遮断漏れや監査対応の不備が起きやすい。
+- **IT部門限定導入**は、「全社展開の小さい版」ではなく、別の論理で正当化する。上がエージェント
+  活用を求めるなら、その提案・設計・リスク評価をする部署（情シス）自身が触っていない状態では
+  提案自体ができない。**Team導入は最終形ではなく、Enterprise/Bedrockへの投資判断に必要な知見を
+  集める情報収集フェーズ**と位置づける。統制の効く少人数（情シス）に限定して使う、という論理で
+  Team/Businessプランでも説明が成立する。
+- この位置づけと、Enterprise/Bedrock投資判断への移行条件は [11](11-rollout-gates.md) で扱う。
 
-## 4. 記事末尾の成果物
+## 記事末尾の成果物
 
-- 候補プランの統制比較表（意思決定用）。
+- 候補プランの統制比較表（意思決定用、2.2節の表をベースに自社の必須要件でフィルタしたもの）
+
+## 自社（情シス小規模導入）への当てはめ
+
+- パイロット段階では Claude Team Standard（または ChatGPT Business）で開始し、SCIM・RBAC・
+  監査ログ等の対応状況を実際に管理画面で確認する（一次情報で確認しきれなかった項目の裏取り）。
+- Enterprise化の判断は、2.2節の「不明・要問い合わせ」項目が自社にとって必須要件かどうかで決める。
+  必須であればEnterpriseまたは層B（[07](07-delivery-architecture-exit.md)）へ進む。
+- コーディングエージェント利用を想定する場合、座席プランがClaude Code/Codexを含むかどうかを
+  契約前に必ず確認する（2.3節）。
 
 ## 留意点・免責
 
-- プラン・価格・認証は変動。確認日必須、四半期見直し前提。
+- プラン・価格・認証取得状況は変動する。確認日を必ず併記し、四半期ごとに再確認する前提で読むこと。
+- 本記事の「不明・要問い合わせ」は、リサーチ時点で一次情報から確認できなかったことを示す。
+  「非対応」と決めつけず、契約前に必ずベンダーへ確認すること。
+- 為替レートは変動する。日本円建ての金額は稟議直前に再確認すること。
 
 ## 参考文献
 
-<!-- 各社公式: プラン/プライバシー/Trust Center/料金ページを追加 -->
+[ref-chatgpt-rename]: https://help.openai.com/en/articles/12111915-chatgpt-business-rename-faq "OpenAI Help Center — ChatGPT Business Rename FAQ（検索経由の確認・要再確認。確認日: 2026-07-13）"
+[ref-claude-pricing]: https://claude.com/pricing "Anthropic — Plans & Pricing（確認日: 2026-07-13）"
+[ref-claude-max]: https://support.claude.com/en/articles/11049741-what-is-the-max-plan "Claude Help Center — What is the Max plan?（確認日: 2026-07-13）"
+[ref-claude-enterprise]: https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan "Claude Help Center — What is the Enterprise plan?（確認日: 2026-07-13）"
+[ref-claude-enterprise-solutions]: https://claude.com/solutions/enterprise "Anthropic — Claude Enterprise（確認日: 2026-07-13）"
+[ref-claude-sso]: https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso "Claude Help Center — Set up single sign-on (SSO)（確認日: 2026-07-13）"
+[ref-claude-mcp-org]: https://support.claude.com/en/articles/15537633-authorize-mcp-connectors-for-your-entire-organization "Claude Help Center — Authorize MCP connectors for your entire organization（確認日: 2026-07-13）"
+[ref-anthropic-certs]: https://privacy.claude.com/en/articles/10015870-what-certifications-has-anthropic-obtained "Anthropic Privacy Center — What Certifications has Anthropic obtained?（確認日: 2026-07-13）"
+[ref-chatgpt-pricing]: https://chatgpt.com/pricing "OpenAI — ChatGPT のプラン（比較表を含む。確認日: 2026-07-13）"
+[ref-openai-trust]: https://trust.openai.com/ "OpenAI Trust Portal（検索経由の確認。確認日: 2026-07-13）"
+[ref-claudecode-admin]: https://code.claude.com/docs/en/admin-setup "Anthropic — Claude Code Docs: Set up Claude Code for your organization（確認日: 2026-07-13）"
+[ref-codex-pricing]: https://learn.chatgpt.com/docs/pricing "OpenAI — Codex Pricing（確認日: 2026-07-13）"

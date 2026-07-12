@@ -16,8 +16,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Claude Code 固有の補足
 
-- このリポジトリはアプリケーションコードではなく**日本語の調査ドキュメント（Markdown）**。
+- このリポジトリはアプリケーションコードではなく**日本語の説明・提案資料（Markdown）**。
   ビルド・テスト・lint は存在しない（AGENTS.md の品質チェックに従う）。
 - Web 調査には `WebSearch` / `WebFetch` を使い、参照した一次情報を記事末尾の「参考文献」に残す。
-- Codex レビュー・ループは `codex exec "<依頼＋対象パス>"` で回し、各回を
-  `docs/reviews/codex-review-round-N.md` に記録する（最大5回）。詳細な運用は AGENTS.md。
+  出典が見つからないことを理由に、意思決定に必要な推奨・示唆を削らない（事実と推奨は別物）。
+- レビュー・ループはサブエージェント（Agent tool、観点別に並行起動）と
+  `codex exec "<依頼＋対象パス>"` を同一ラウンドで回し、`docs/reviews/explainer-review-round-N.md`
+  に記録する（最大5回）。詳細な運用は AGENTS.md。
