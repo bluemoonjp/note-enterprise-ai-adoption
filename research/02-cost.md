@@ -129,27 +129,16 @@ ROIを楽観視しすぎない根拠も示しておく。Gartnerは、**2027年�
 （[Gartner「Gartner Predicts Over 40% of Agentic AI Projects Will Be Canceled by End of 2027」][ref-gartner-cancel]、
 2025-06-25付、確認日: 2026-07-13）。
 
-**この「コスト超過」は、API従量課金など特定の料金体系に起因するとは限らない点に注意する。**
-Gartnerの分析が主因として挙げているのは、PoC（概念実証）の乱立や「agent washing」（既存製品を
-エージェントと称して売る動き）等、**検証不足のまま期待先行で投資が積み上がること**であり、
-座席課金（月額固定）・従量課金のどちらでも起こり得る問題である。「月額制のプランだから
-コスト超過とは無縁」という理解は正確ではない。なお、API従量課金に**固有の**リスクとして、
-利用量の急増による請求額の予見しづらさはあるが（[06](06-vendor-plans.md)・[07](07-delivery-architecture-exit.md)の
-課金単位比較を参照）、これはGartnerが指摘する「コスト超過」の一部の論点にすぎず、本プロジェクトが
-推奨する座席課金プランへの限定だけでは、Gartnerが指摘する主要因（検証不足のまま投資を拡大すること）
-への対策にはならない。
+**この「コスト超過」は、特定の料金体系に限定した話ではない点に注意する。** Gartnerの発表は
+上記3つの理由を並列で挙げているのみで、原因をAPI従量課金のような特定の料金体系に限定してはいない
+（同出典）。座席課金・従量課金のどちらであっても、検証不足のまま投資を積み上げれば同じリスクが
+生じ得る。したがって対策になるのは料金体系の選択そのものではなく、**指標を先に決めて測定し、
+撤退条件をあらかじめ用意するパイロット設計**である。
 
 裏を返せば、中止に至るプロジェクトの多くは**測定なく大きく賭けた**ケースである。本プロジェクトが
 推奨する進め方（小規模IT部門限定・指標を先に決めるパイロット）は、この失敗パターンを避けるための
-設計になっている（[11](11-rollout-gates.md)）。
-
-「導入すれば自動的に投資回収できる」わけではない、という点は業界の実証データにも表れている。
-McKinseyの分析では、AI活用で高い成果を上げている企業は、そうでない企業に比べて**業務プロセスの
-根本的な再設計に取り組んでいる比率が2.8倍高い（55% 対 20%）**と報告されている
-（[McKinsey「The state of AI: How organizations are rewiring to capture value」][ref-mckinsey-rewiring]、
-2025-03-12付、確認日: 2026-07-13）。ツールを配布するだけでなく、**入れる情報の整備・業務プロセスの
-組み替え**（[03](03-effectiveness-dx.md)）にまで踏み込むかどうかが、投資回収の成否を分ける要因の
-一つである。
+設計になっている（[11](11-rollout-gates.md)）。あわせて、ツールを配布するだけでなく**業務プロセス・
+情報基盤の整備**にまで踏み込むことも、投資回収を大きくするうえで重要になる（[03](03-effectiveness-dx.md)）。
 
 一方で、生産性向上の期待値自体は複数の第三者調査で確認できる。McKinsey Global AI Survey等の
 分析では、AIエージェントを実運用で使う知識労働者は**週あたり中央値6.4時間**を回収しているという
@@ -189,4 +178,3 @@ AIエージェントが年間 **2.6兆〜4.4兆ドル**の価値を生み出し�
 [ref-chatgpt-pricing]: https://chatgpt.com/pricing "OpenAI — ChatGPT のプラン（確認日: 2026-07-13）"
 [ref-gartner-cancel]: https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027 "Gartner — Gartner Predicts Over 40% of Agentic AI Projects Will Be Canceled by End of 2027（確認日: 2026-07-13）"
 [ref-digitalapplied-productivity]: https://www.digitalapplied.com/blog/ai-agent-productivity-statistics-2026-roi-data-points "Digital Applied — AI Agent Productivity Statistics 2026: 100+ ROI Data（二次情報。原典はMcKinsey Global AI Survey 2026等。確認日: 2026-07-13）"
-[ref-mckinsey-rewiring]: https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-how-organizations-are-rewiring-to-capture-value "McKinsey — The state of AI: How organizations are rewiring to capture value（2025-03-12付、確認日: 2026-07-13）"

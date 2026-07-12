@@ -40,6 +40,13 @@ DX（デジタルトランスフォーメーション）の本質は、既存の
 - 例）問い合わせ対応: 「担当者が過去のナレッジを検索して回答する」から、「AIが一次回答案を
   作成し、担当者は正確性確認と難易度の高い案件に集中する」に組み替える。
 
+実際、McKinseyの調査でも、AI活用で高い成果を上げている企業は、そうでない企業に比べて**業務プロセスの
+根本的な再設計に取り組んでいる比率が2.8倍高い（55% 対 20%）**と報告されている
+（[McKinsey「The state of AI: How organizations are rewiring to capture value」][ref-mckinsey-rewiring]、
+2025-03-12付、確認日: 2026-07-13）。ツールを配布するだけで届く効果（[02](02-cost.md)4.3節の
+損益分岐点、座席あたり月1人時程度）は比較的低いハードルだが、そこからさらに踏み込んだ成果を
+狙うのであれば、本節で述べる情報基盤・業務プロセスの組み替えが要る。
+
 この組み替えには、業務部門（実際にその業務を担っている人）の協力が不可欠である。小規模IT部門
 だけでは「何を整えるべきか」の勘所がわからないため、小規模IT部門限定パイロットの段階では
 **まず自部門の業務で型を作る**（4節）ことが現実的な出発点になる。
@@ -102,5 +109,6 @@ AIに渡すと、本来その業務では見るべきでない情報まで参照
 
 ## 参考文献
 
-本記事は概念整理が中心のため、個別の一次情報引用は少ない。生産性・効果に関する数値的根拠は
-[02](02-cost.md) 4.4節の参考文献を参照。RAG・グラウンディング等の用語定義は [用語集](../docs/glossary.md) を参照。
+[ref-mckinsey-rewiring]: https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-how-organizations-are-rewiring-to-capture-value "McKinsey — The state of AI: How organizations are rewiring to capture value（2025-03-12付、確認日: 2026-07-13）"
+
+その他の生産性・効果に関する数値的根拠は [02](02-cost.md) 4.4節の参考文献を参照。RAG・グラウンディング等の用語定義は [用語集](../docs/glossary.md) を参照。
