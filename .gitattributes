@@ -1,0 +1,4 @@
+# テキストは LF に正規化（Claude Code / Codex を異なるOSで併用しても差分が出にくくする）
+* text=auto eol=lf
+*.md text eol=lf
+*.yml text eol=lf
