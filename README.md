@@ -26,7 +26,7 @@
 - 全社導入はハードルが高いため、まずIT部門で小規模導入し効果を最大化したい。
 - Claude 導入を主に想定（記事では Codex／OpenAI も同等に扱う）。
 
-詳細は [research/00-overview.md](research/00-overview.md)。
+詳細は [research/00-エグゼクティブサマリ.md](research/00-エグゼクティブサマリ.md)。
 
 ## このリポジトリの構成
 
