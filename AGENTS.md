@@ -23,7 +23,7 @@
 - 言語: **すべて日本語**
 - 公開範囲: Public リポジトリ
 
-想定読者・前提の詳細は [research/00-overview.md](research/00-overview.md) を参照。
+想定読者・前提の詳細は [research/00-エグゼクティブサマリ.md](research/00-エグゼクティブサマリ.md) を参照。
 
 ## 絶対に守るルール
 
