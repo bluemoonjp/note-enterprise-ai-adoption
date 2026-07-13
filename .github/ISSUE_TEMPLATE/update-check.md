@@ -13,20 +13,20 @@ assignees: []
 
 ## 確認対象
 
-- [ ] research/05-security-legal-procurement.md
-- [ ] research/06-vendor-plans.md
-- [ ] research/07-delivery-architecture-exit.md
-- [ ] research/08-it-dept-agents.md（コネクタ/権限仕様）
-- [ ] research/09-coding-agents.md（データ取り扱い/除外設定）
+- [ ] research/05-セキュリティ法務調達.md
+- [ ] research/06-製品プラン比較.md
+- [ ] research/07-提供方式と出口戦略.md
+- [ ] research/08-IT部門向けAIエージェント.md（コネクタ/権限仕様）
+- [ ] research/09-コーディングエージェント.md（データ取り扱い/除外設定）
 - [ ] その他、確認日が古い記事
 
 ## 手順
 
 1. 各記事の一次情報を再取得し、差分を確認する。
 2. 変わっていれば本文と比較表・確認日・再確認期限を更新する。
-3. 更新責任者と次回再確認日を記録する。
+3. 次回再確認日を記録する。
 
 ## 完了条件
 
-- [ ] 対象記事の確認日・再確認期限・更新責任者を更新した
+- [ ] 対象記事の確認日・再確認期限を更新した
 - [ ] 変更点をPRにまとめた（`Closes #<番号>`）

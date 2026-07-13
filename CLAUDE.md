@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## まず AGENTS.md を読む（運用ルールの正本）
 
-本リポジトリの作業ルール（目的・出典必須・確認日・更新責任者・Issue駆動フロー・
+本リポジトリの作業ルール（目的・出典必須・確認日・Issue駆動フロー・
 ディレクトリの意味・ステータス遷移・比較表ルール・Codexレビューの回し方・よく使う
 コマンド・品質チェック）はすべて [AGENTS.md](AGENTS.md) に集約している。
 **作業前に AGENTS.md を読むこと。** ルールの変更は AGENTS.md 側に加える。
