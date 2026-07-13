@@ -20,7 +20,8 @@
 - 反論への回答: 「導入すれば自動的に効果が出る」わけではない。Gartnerは**エージェント型AIプロジェクトの
   40%超が2027年末までに中止される**と予測しており、主因はコスト超過・ROI不明確・ガバナンス不備
   とされる（4.4節）。ROIを実際に取り返すには、測定と撤退条件をセットで設計する必要がある
-  （測定運用は [10](10-pilot-operations.md)）。
+  （測定運用は [10](10-pilot-operations.md)）。**「時短が起きないリスク」自体は低いが、「浮いた
+  時間が可視化された成果に転化しないリスク」は別途対策が要る**（4.5節）。
 - 次のアクション: 4節の試算式に自社の座席数・人件費・削減時間を当てはめ、稟議用の数値を作る
   （雛形は [付録](appendix/README.md)）。
 
@@ -141,6 +142,33 @@ AIエージェントが年間 **2.6兆〜4.4兆ドル**の価値を生み出し�
 （あくまで「業界の期待値の大きさ」の参考）。**自社の判断根拠は、パイロットで実測した削減時間**
 （[10](10-pilot-operations.md) の5指標）に置き換える。
 
+### 4.5 「時短が起きないリスク」と「浮いた時間が成果に転化しないリスク」は別物
+
+「月額プランのコストを取り返せないのでは」という懸念を分解すると、実際には性質の異なる
+2つのリスクが混ざっている。
+
+- **リスクA: 削減時間自体が発生しないリスク**: 座席あたり月1人時程度（4.3節）という損益分岐点の
+  低さを踏まえると、**このリスクは低い**。文章作成・調査・要約等の汎用作業で全く時短効果が
+  出ないケースは考えにくい。
+- **リスクB: 浮いた時間が、可視化された成果（削減工数・品質向上・処理量増加等、1節）に
+  転化しないリスク**: 浮いた時間が**単なる余裕（手待ち時間）や、優先度の低い別の作業に
+  置き換わってしまい**、組織として投資対効果を説明できる形で残らない、というリスク。
+  **本プロジェクトの見解では、こちらが実務上の本質的なリスクである。**
+
+- **事実**: Workdayが調査会社Hanover Researchに委託し2025年11月に実施した調査（年商1億ドル以上の
+  企業に勤め、AIを実際に業務利用しているフルタイム従業員3,200名対象、北米・APAC・EMEA）では、
+  AIによる削減時間のうち**約4割が低品質な出力の手直し（やり直し作業）に消えている**、また
+  浮いた時間を戦略的な仕事（分析・意思決定等、より価値の高い業務）に再投資できていると回答した
+  従業員は一部にとどまり、**32%は単に業務量を増やすだけ**（スキル向上や高付加価値業務への
+  転換が伴わない）と回答している
+  （[Workday「Beyond Productivity: Measuring the Real Value of AI」][ref-workday-productivity]、
+  2026-01-14付、確認日: 2026-07-13、二次情報のため参考値。自社での実測を優先すること）。
+- **本プロジェクトの見解**: この結果は「導入しても元が取れない」ことの根拠ではなく、
+  **「時短効果は出るが、漫然と放置すると成果として可視化されない」**ことの根拠として読む。
+  対策は「時短が起きたかどうか」だけでなく、**「浮いた時間が実際に何に使われたか」**まで
+  パイロットの測定対象に含めることである（[10](10-pilot-operations.md) の測定指標1を、
+  単なる削減時間ではなく削減時間の使途まで含めて設計する）。
+
 ## 記事末尾の成果物
 
 - ROI試算表（座席数・人件費・削減時間を入力すると損益分岐点を計算できる雛形）
@@ -169,3 +197,4 @@ AIエージェントが年間 **2.6兆〜4.4兆ドル**の価値を生み出し�
 [ref-chatgpt-pricing]: https://chatgpt.com/pricing "OpenAI — ChatGPT のプラン（確認日: 2026-07-13）"
 [ref-gartner-cancel]: https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027 "Gartner — Gartner Predicts Over 40% of Agentic AI Projects Will Be Canceled by End of 2027（確認日: 2026-07-13）"
 [ref-digitalapplied-productivity]: https://www.digitalapplied.com/blog/ai-agent-productivity-statistics-2026-roi-data-points "Digital Applied — AI Agent Productivity Statistics 2026: 100+ ROI Data（二次情報。原典はMcKinsey Global AI Survey 2026等。確認日: 2026-07-13）"
+[ref-workday-productivity]: https://www.prnewswire.com/news-releases/new-workday-research-companies-are-leaving-ai-gains-on-the-table-302660517.html "Workday — New Workday Research: Companies Are Leaving AI Gains on the Table（調査『Beyond Productivity: Measuring the Real Value of AI』、Hanover Research実施、2026-01-14付、確認日: 2026-07-13）"
