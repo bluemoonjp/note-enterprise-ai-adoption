@@ -104,17 +104,12 @@ SaaS・ストレージには無かった論点であり、[05](05-security-legal
 
 多くの組織で、個人アカウントでのAI利用（シャドーAI）はすでに起きている。Gartnerが2025年3月〜5月に
 実施したサイバーセキュリティ責任者302名への調査では、**69%の組織が、従業員による禁止された
-公開生成AIの利用を疑っている、または証拠を持っている**と回答している
+公開生成AIの利用を疑っている、または証拠を持っている**と回答しており、**2030年までに企業の40%超が
+無管理のシャドーAIに起因するセキュリティ・コンプライアンス上のインシデントを経験する**と予測している
 （[Gartner「Gartner Identifies Critical GenAI Blind Spots That CIOs Must Urgently Address」][ref-gartner-blindspots]、
-2025-11-19付プレスリリース、2026-07-13時点）。同社は**2030年までに企業の40%超が、無管理のシャドーAIに
-起因するセキュリティ・コンプライアンス上のインシデントを経験する**と予測している（同出典）。
-
-Salesforceが自社調査として公表したデータでは、**生成AI利用者の半数以上が、会社の承認を得ていない
-ツールを業務で使っている**とされる（[Salesforce「More than Half of Generative AI Adopters Use
-Unapproved Tools at Work」][ref-salesforce-shadow-ai]、2026-07-13時点）。PagerDutyの調査でも、
-**オフィスワーカーの66%が、会社のポリシー上許可されていないと認識しながらAIツールを使った経験がある**
-と報告されている（[PagerDuty「Two-Thirds (66%) of Office Professionals Have Used Unauthorized AI
-Tools at Work」][ref-pagerduty-shadow-ai]、2026-07-13時点）。
+2025-11-19付プレスリリース、2026-07-13時点）。同様の傾向はSalesforce・PagerDutyの調査でも参考として
+確認できる（生成AI利用者の半数以上、オフィスワーカーの約3分の2が未承認ツールを使用と回答。
+[Salesforce][ref-salesforce-shadow-ai]・[PagerDuty][ref-pagerduty-shadow-ai]、確認日: 2026-07-13）。
 
 これらは第三者機関・ベンダー自身の調査であり、自社の実態と一致するとは限らない（サンプルは主に
 欧米企業）。ただし社内で「個人アカウントのChatGPTやClaudeで検証している」という話が一件でも
@@ -149,6 +144,9 @@ Tools at Work」][ref-pagerduty-shadow-ai]、2026-07-13時点）。
 ## 4. 記事末尾の成果物
 
 ### 用途別 許可／条件付き／禁止 判定チェックリスト（初期案）
+
+日常業務の大半は「許可」区分に該当する。以下の「禁止」は、個人情報・NDA対象情報・認証情報・
+未公表財務情報といった例外的なケースに限られる。
 
 | 用途 | 区分 | 前提条件 | 備考 |
 | --- | --- | --- | --- |
